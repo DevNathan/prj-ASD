@@ -13,7 +13,7 @@ npm i
 # 소켓 서버 도메인 정의
 REACT_APP_SOCKET_SERVER_DOMAIN=localhost:10100
 ```
-<p style="color: red">중요!</p>웹 서버에 명령을 보낼 수 있는 웹소켓 도메인을 ***.env*** 파일에서 정의 할 것
+<p>$\it{\large{\color{#ff4343}!중요!}}$</p>웹 서버에 명령을 보낼 수 있는 웹소켓 도메인을 ***.env*** 파일에서 정의 할 것
 
 ## 3. 서버 테스트 실행
 ```bash
