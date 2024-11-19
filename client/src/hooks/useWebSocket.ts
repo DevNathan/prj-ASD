@@ -30,8 +30,10 @@ const useWebSocket = (url: string): UseWebSocketResult => {
     socketRef.current = new WebSocket(url);
 
     socketRef.current.onmessage = (e) => {
+      console.log(e.data)
       const transformedMessage = transformMessage(e.data);
       if (transformedMessage) {
+        console.log(transformedMessage)
         setMessages((prev) => [...prev, transformedMessage]);
       }
     };

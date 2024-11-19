@@ -21,8 +21,7 @@ wss.on("connection", (ws: ws.WebSocket) => {
 
   ws.on("message", (message: string) => {
     try {
-      const parsedMessage: ChatMessage = JSON.parse(message);
-      handleChatMessage(parsedMessage);
+      handleChatMessage(message);
     } catch (error) {
       console.error("메시지 처리 중 오류:", error);
     }
@@ -35,11 +34,11 @@ wss.on("connection", (ws: ws.WebSocket) => {
   });
 });
 
-const handleChatMessage = (message: ChatMessage) => {
-  console.log("채팅 메시지 수신:", message.message);
+const handleChatMessage = (message: string) => {
+  console.log("채팅 메시지 수신:", message);
   clients.forEach((client) => {
     if (client.readyState === ws.WebSocket.OPEN) {
-      client.send(JSON.stringify(message));
+      client.send(message);
     }
   });
 };
@@ -47,14 +46,9 @@ const handleChatMessage = (message: ChatMessage) => {
 // 이새끼 왜 오류나는지는 모르겠는데 일단 무시 처리
 // @ts-ignore
 app.post("/send-message", (req: Request, res: Response) => {
-  const message: ChatMessage = req.body;
+  const {message} = req.body;
 
-  // 메시지 유효성 검사
-  if (!message || !message.message || !message.type) {
-    return res.status(400).send("Invalid message format");
-  }
-
-  console.log("HTTP 요청을 통해 메시지 전송:", message.message);
+  console.log("HTTP 요청을 통해 메시지 전송:", message);
   handleChatMessage(message);
   res.send("메시지가 WebSocket을 통해 전송되었습니다.");
 });

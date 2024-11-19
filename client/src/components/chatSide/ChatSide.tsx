@@ -17,7 +17,7 @@ const ChatSide = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, []);
+  }, [messages]);
 
   return (
     <S.Container>
