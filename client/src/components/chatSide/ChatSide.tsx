@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import * as S from "./style";
 import Chat from "@/components/chatSide/chat/Chat";
-import useWebSocket from "@/hooks/useWebSocket";
+import { ChatMessage } from "@/types/ChatType";
 
-const ChatSide = () => {
-  const SERVER = process.env.REACT_APP_SOCKET_SERVER_DOMAIN;
+type Props = {
+  messages: ChatMessage[];
+};
 
+const ChatSide = ({ messages }: Props) => {
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const { messages } = useWebSocket(`ws://${SERVER}`);
 
   const scrollToBottom = () => {
     if (chatEndRef.current) {
@@ -21,16 +22,12 @@ const ChatSide = () => {
 
   return (
     <S.Container>
-      {!SERVER ? (
-        <div>환경변수가 정의되지 않아 정상적으로 실행되지 않습니다.</div>
-      ) : (
-        <S.ChatWrapper>
-          {messages.map((msg, index) => (
-            <Chat key={index} type={msg.type} text={msg.message} />
-          ))}
-          <div ref={chatEndRef} />
-        </S.ChatWrapper>
-      )}
+      <S.ChatWrapper>
+        {messages.map((msg, index) => (
+          <Chat key={index} type={msg.type} text={msg.message} />
+        ))}
+        <div ref={chatEndRef} />
+      </S.ChatWrapper>
     </S.Container>
   );
 };

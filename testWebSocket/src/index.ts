@@ -3,7 +3,6 @@ import { config } from "dotenv";
 import "tsconfig-paths/register.js";
 import * as http from "node:http";
 import * as ws from "ws";
-import { ChatMessage } from "@/type/requestType";
 
 config();
 
@@ -21,7 +20,7 @@ wss.on("connection", (ws: ws.WebSocket) => {
 
   ws.on("message", (message: string) => {
     try {
-      handleChatMessage(message);
+      handleWebSocketMessage(message);
     } catch (error) {
       console.error("메시지 처리 중 오류:", error);
     }
@@ -34,24 +33,26 @@ wss.on("connection", (ws: ws.WebSocket) => {
   });
 });
 
-const handleChatMessage = (message: string) => {
-  console.log("채팅 메시지 수신:", message);
+const handleWebSocketMessage = (message: string) => {
+  console.log("웹소켓 메시지 수신:", message);
+};
+
+app.post("/send-message", (req: Request, res: Response) => {
+  const { message } = req.body;
+
+  console.log("HTTP 요청을 통해 메시지 수신:", message);
+  handleHTTPMessage(message);
+  res.send("메시지가 WebSocket을 통해 전송되었습니다.");
+});
+
+const handleHTTPMessage = (message: string) => {
+  console.log("HTTP 메시지 처리:", message);
   clients.forEach((client) => {
     if (client.readyState === ws.WebSocket.OPEN) {
       client.send(message);
     }
   });
 };
-
-// 이새끼 왜 오류나는지는 모르겠는데 일단 무시 처리
-// @ts-ignore
-app.post("/send-message", (req: Request, res: Response) => {
-  const {message} = req.body;
-
-  console.log("HTTP 요청을 통해 메시지 전송:", message);
-  handleChatMessage(message);
-  res.send("메시지가 WebSocket을 통해 전송되었습니다.");
-});
 
 server.listen(port, () => {
   console.log(`서버가 http://localhost:${port} 에서 실행 중입니다.`);

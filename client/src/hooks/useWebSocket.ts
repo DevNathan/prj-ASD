@@ -3,6 +3,7 @@ import { ChatMessage } from "@/types/ChatType";
 
 type UseWebSocketResult = {
   messages: ChatMessage[];
+  sendMessage: (message: string) => void;
 };
 
 const useWebSocket = (url: string): UseWebSocketResult => {
@@ -25,15 +26,23 @@ const useWebSocket = (url: string): UseWebSocketResult => {
     return null;
   }
 
+  const sendMessage = (message: string) => {
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      socketRef.current.send(message);
+    } else {
+      console.error("웹소켓 연결이 끊겨있습니다. 연결을 확인해주세요.");
+    }
+  };
+
   // 웹소켓 연결 및 메시지 수신 처리
   useEffect(() => {
     socketRef.current = new WebSocket(url);
 
     socketRef.current.onmessage = (e) => {
-      console.log(e.data)
+      console.log(e.data);
       const transformedMessage = transformMessage(e.data);
       if (transformedMessage) {
-        console.log(transformedMessage)
+        console.log(transformedMessage);
         setMessages((prev) => [...prev, transformedMessage]);
       }
     };
@@ -45,7 +54,7 @@ const useWebSocket = (url: string): UseWebSocketResult => {
     };
   }, [url]);
 
-  return { messages };
+  return { messages, sendMessage };
 };
 
 export default useWebSocket;
