@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import * as S from "./style";
 import Chat from "@/components/chatSide/chat/Chat";
-import { ChatMessage } from "@/types/ChatType";
+import { useDisplayMessages } from "@/contexts/MessageContext";
+import MicIcon from "@/assets/MicIcon";
+import { useMicIndicator } from "@/contexts/MicIndicatorContext";
 
-type Props = {
-  messages: ChatMessage[];
-};
-
-const ChatSide = ({ messages }: Props) => {
+const ChatSide = () => {
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const { messages } = useDisplayMessages();
+  const { show } = useMicIndicator();
 
   const scrollToBottom = () => {
     if (chatEndRef.current) {
@@ -28,6 +28,13 @@ const ChatSide = ({ messages }: Props) => {
         ))}
         <div ref={chatEndRef} />
       </S.ChatWrapper>
+      {show && (
+        <S.IndicatorSetter>
+          <S.MicIndicatorWrapper>
+            <MicIcon fill={"#000"} />
+          </S.MicIndicatorWrapper>
+        </S.IndicatorSetter>
+      )}
     </S.Container>
   );
 };

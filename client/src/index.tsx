@@ -3,14 +3,20 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./reset.css";
+import {MessageProvider} from "@/contexts/MessageContext";
+import {MicIndicatorProvider} from "@/contexts/MicIndicatorContext";
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement,
+    document.getElementById("root") as HTMLElement,
 );
 root.render(
-  <>
-    <App />
-  </>,
+    <>
+        <MessageProvider>
+            <MicIndicatorProvider>
+                <App/>
+            </MicIndicatorProvider>
+        </MessageProvider>
+    </>,
 );
 
 // If you want to start measuring performance in your app, pass a function

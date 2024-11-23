@@ -1,30 +1,34 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { ChatMessage } from "@/types/ChatType";
+import {useDisplayMessages} from "@/contexts/MessageContext";
+import {useMicIndicator} from "@/contexts/MicIndicatorContext";
 
 type UseWebSocketResult = {
-  messages: ChatMessage[];
   sendMessage: (message: string) => void;
 };
 
-const useWebSocket = (url: string): UseWebSocketResult => {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const socketRef = useRef<WebSocket | null>(null);
-
-  // 받은 메시지는 STT: {text} 혹은 TTS: {text}로 올 것.
-  function transformMessage(rawMessage: string): ChatMessage | null {
-    if (rawMessage.startsWith("STT:")) {
-      return {
-        type: "USER",
-        message: rawMessage.replace("STT:", "").trim(),
-      };
-    } else if (rawMessage.startsWith("TTS:")) {
-      return {
-        type: "BOT",
-        message: rawMessage.replace("TTS:", "").trim(),
-      };
-    }
-    return null;
+function transformMessage(rawMessage: string): ChatMessage | null {
+  console.log(rawMessage);
+  if (rawMessage.startsWith("STT:")) {
+    return {
+      type: "USER",
+      message: rawMessage.replace("STT:", "").trim(),
+    };
+  } else if (rawMessage.startsWith("TTS:")) {
+    return {
+      type: "BOT",
+      message: rawMessage.replace("TTS:", "").trim(),
+    };
   }
+  return null;
+}
+
+const useWebSocket = (
+    url: string,
+): UseWebSocketResult => {
+  const {handleMicDisplay} = useMicIndicator();
+  const {addMessage} = useDisplayMessages();
+  const socketRef = useRef<WebSocket | null>(null);
 
   const sendMessage = (message: string) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -34,16 +38,22 @@ const useWebSocket = (url: string): UseWebSocketResult => {
     }
   };
 
-  // 웹소켓 연결 및 메시지 수신 처리
   useEffect(() => {
     socketRef.current = new WebSocket(url);
 
     socketRef.current.onmessage = (e) => {
-      console.log(e.data);
-      const transformedMessage = transformMessage(e.data);
+      const rawMessage = e.data;
+
+      // 마이크 관련 메시지 처리
+      if (rawMessage === "RECORD_START" || rawMessage === "RECORD_STOP") {
+        handleMicDisplay(rawMessage);
+        return;
+      }
+
+      // 일반 메시지 처리
+      const transformedMessage = transformMessage(rawMessage);
       if (transformedMessage) {
-        console.log(transformedMessage);
-        setMessages((prev) => [...prev, transformedMessage]);
+        addMessage(transformedMessage); // 일반 메시지 전달
       }
     };
 
@@ -54,7 +64,7 @@ const useWebSocket = (url: string): UseWebSocketResult => {
     };
   }, [url]);
 
-  return { messages, sendMessage };
+  return { sendMessage };
 };
 
 export default useWebSocket;
