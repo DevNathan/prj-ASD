@@ -12,7 +12,7 @@ const MicIndicatorContext = createContext<MicIndicatorContextType | undefined>(
 export const MicIndicatorProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
 
   const handleMicDisplay = useCallback((message: string) => {
     if (message === "RECORD_START") {
