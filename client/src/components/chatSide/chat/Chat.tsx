@@ -1,8 +1,6 @@
 import React from "react";
 import * as S from "./style";
 import { ChatType } from "@/types/ChatType";
-import { TextBox } from "./style";
-import classNames from "classnames";
 
 type Props = {
   type: ChatType;
@@ -13,11 +11,9 @@ const Chat = ({ type, text }: Props) => {
   return (
     <S.Wrapper type={type}>
       {type === "BOT" && <S.Image src={"/images/알덕이.png"} alt={"알덕이"} />}
-      <S.TextBox>
+      <S.TextBox className={type === "BOT" ? "left" : "right"}>
         <span>{text}</span>
-        <div
-          className={classNames("tail", type === "BOT" ? "left" : "right")}
-        />
+        <div className={"tail"} />
       </S.TextBox>
     </S.Wrapper>
   );

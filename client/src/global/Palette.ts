@@ -5,6 +5,7 @@ const Palette = {
     m3: "#7e7e7e",
   },
   point: {
+    p0: "#ffdb63",
     p1: "#FFD651",
     p2: "#c8a83f",
   },

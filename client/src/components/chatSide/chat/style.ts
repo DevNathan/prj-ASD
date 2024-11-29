@@ -1,6 +1,15 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Palette from "@/global/Palette";
 import { ChatType } from "@/types/ChatType";
+
+const slideUp = (start: string) => keyframes`
+    0% {
+        transform: translateY(${start});
+    }
+    100% {
+        transform: translateY(0);
+    }
+`;
 
 export const Wrapper = styled.article.attrs<{ type: ChatType }>((props) => ({
   style: {
@@ -27,7 +36,6 @@ export const TextBox = styled.div`
   flex: 1;
   max-width: 60%;
   border-radius: 12px;
-  //box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
   border: 2px solid rgba(164, 164, 164, 0.25);
   position: relative;
   top: 20px;
@@ -35,6 +43,7 @@ export const TextBox = styled.div`
   padding: 20px;
   background-color: ${Palette.primary.m1};
   overflow: visible;
+  animation: ${slideUp("40%")} 0.8s forwards;
 
   & .tail {
     content: "";
@@ -44,18 +53,31 @@ export const TextBox = styled.div`
     width: 30px;
     height: 30px;
     background-color: ${Palette.primary.m1};
+  }
 
-    &.left {
+  &.left {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
+    background-color: ${Palette.point.p0};
+
+    & .tail {
       right: 100%;
       transform: translateX(calc(50% - 1px)) rotate(45deg);
       border-left: 2px solid rgba(164, 164, 164, 0.25);
       border-bottom: 2px solid rgba(164, 164, 164, 0.25);
+      background-color: ${Palette.point.p0};
     }
-    &.right {
+  }
+
+  &.right {
+    box-shadow: -4px 4px 8px rgba(0, 0, 0, 0.25);
+    background-color: #bff2f2;
+
+    & .tail {
       left: 100%;
       transform: translateX(calc(-50% + 1px)) rotate(225deg);
       border-left: 2px solid rgba(164, 164, 164, 0.25);
       border-bottom: 2px solid rgba(164, 164, 164, 0.25);
+      background-color: #bff2f2;
     }
   }
 

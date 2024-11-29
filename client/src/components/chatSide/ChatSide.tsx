@@ -10,6 +10,8 @@ const ChatSide = () => {
   const { messages } = useDisplayMessages();
   const { show } = useMicIndicator();
 
+  const prevMessageLength = useRef<number>(0);
+
   const scrollToBottom = () => {
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -17,6 +19,16 @@ const ChatSide = () => {
   };
 
   useEffect(() => {
+    // 메시지 길이가 증가했을 때만 소리 재생
+    if (messages.length > prevMessageLength.current) {
+      console.log("작동");
+      const audio = new Audio("/sounds/ping.mp3");
+      audio
+        .play()
+        .catch((error) => console.error("Audio playback failed:", error));
+    }
+    prevMessageLength.current = messages.length;
+
     scrollToBottom();
   }, [messages]);
 
