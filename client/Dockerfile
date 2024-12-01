@@ -9,7 +9,6 @@ COPY package*.json .
 # 의존성 설치
 RUN ["npm", "ci"]
 
-
 ENV NODE_ENV=production
 
 # 나머지 소스 코드 복사
