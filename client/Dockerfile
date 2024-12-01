@@ -7,7 +7,10 @@ WORKDIR /app
 COPY package*.json .
 
 # 의존성 설치
-RUN ["npm", "install"]
+RUN ["npm", "ci"]
+
+
+ENV NODE_ENV=production
 
 # 나머지 소스 코드 복사
 COPY . .
@@ -20,6 +23,9 @@ RUN ["npm", "install", "-g", "serve"]
 
 # 컨테이너의 3000번 포트 노출
 EXPOSE 3000
+
+# 서버 실행전 유저 권한 낮춤
+USER node
 
 # 애플리케이션 시작
 CMD ["serve", "-s", "build", "-l", "3000"]
