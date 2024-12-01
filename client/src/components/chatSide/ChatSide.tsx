@@ -21,11 +21,15 @@ const ChatSide = () => {
   useEffect(() => {
     // 메시지 길이가 증가했을 때만 소리 재생
     if (messages.length > prevMessageLength.current) {
-      console.log("작동");
-      const audio = new Audio("/sounds/ping.mp3");
-      audio
-        .play()
-        .catch((error) => console.error("Audio playback failed:", error));
+      const newMessage = messages[messages.length - 1];
+
+      // 새로 추가된 메시지가 BOT이면 사운드 재생
+      if (newMessage?.type === "BOT") {
+        const audio = new Audio("/sounds/ping.mp3");
+        audio
+          .play()
+          .catch((error) => console.error("Audio playback failed:", error));
+      }
     }
     prevMessageLength.current = messages.length;
 
